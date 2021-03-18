@@ -44,9 +44,15 @@ int main(int argc, char **argv)
 #define main qemu_main
 #endif /* CONFIG_COCOA */
 
+/*
+ * 程序入口
+ */
 int main(int argc, char **argv, char **envp)
 {
     qemu_init(argc, argv, envp);
+	/*
+	 * 主循环
+	 */
     qemu_main_loop();
     qemu_cleanup();
 
