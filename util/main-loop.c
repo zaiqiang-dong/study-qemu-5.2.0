@@ -517,6 +517,9 @@ void main_loop_wait(int nonblocking)
                                       timerlistgroup_deadline_ns(
                                           &main_loop_tlg));
 
+	/*
+	 * 关键流程
+	 */
     ret = os_host_main_loop_wait(timeout_ns);
     mlpoll.state = ret < 0 ? MAIN_LOOP_POLL_ERR : MAIN_LOOP_POLL_OK;
     notifier_list_notify(&main_loop_poll_notifiers, &mlpoll);

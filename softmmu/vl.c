@@ -1675,6 +1675,9 @@ void qemu_main_loop(void)
 #ifdef CONFIG_PROFILER
         ti = profile_getclock();
 #endif
+		/*
+		 * 进入主循环
+		 */
         main_loop_wait(false);
 #ifdef CONFIG_PROFILER
         dev_time += profile_getclock() - ti;
