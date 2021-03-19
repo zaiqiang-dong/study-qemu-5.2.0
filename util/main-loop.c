@@ -142,6 +142,9 @@ void qemu_notify_event(void)
     qemu_bh_schedule(qemu_notify_bh);
 }
 
+/*
+ * 这里存入了所有需要监听的fd
+ */
 static GArray *gpollfds;
 
 int qemu_init_main_loop(Error **errp)
@@ -185,11 +188,17 @@ void qemu_fd_register(int fd)
 
 static void glib_pollfds_fill(int64_t *cur_timeout)
 {
+	/*
+	 * 分配主循环 context
+	 */
     GMainContext *context = g_main_context_default();
     int timeout = 0;
     int64_t timeout_ns;
     int n;
 
+	/*
+	 * 开始为主循环做准备
+	 */
     g_main_context_prepare(context, &max_priority);
 
     glib_pollfds_idx = gpollfds->len;
@@ -217,6 +226,7 @@ static void glib_pollfds_poll(void)
     GMainContext *context = g_main_context_default();
     GPollFD *pfds = &g_array_index(gpollfds, GPollFD, glib_pollfds_idx);
 
+	/* 检测分发 */
     if (g_main_context_check(context, max_priority, pfds, glib_n_poll_fds)) {
         g_main_context_dispatch(context);
     }
@@ -231,16 +241,28 @@ static int os_host_main_loop_wait(int64_t timeout)
 
     g_main_context_acquire(context);
 
+	/*
+	 * 添加poll fd,并返回最小的超时时间
+	 */
     glib_pollfds_fill(&timeout);
 
     qemu_mutex_unlock_iothread();
     replay_mutex_unlock();
 
+	/*
+	 * 这里会阻塞主线程
+	 */
     ret = qemu_poll_ns((GPollFD *)gpollfds->data, gpollfds->len, timeout);
 
+	/*
+	 * 到这里说明要不时间超时,要不监听的FD上发生了事件
+	 */
     replay_mutex_lock();
     qemu_mutex_lock_iothread();
 
+	/*
+	 * 事件分发处理
+	 */
     glib_pollfds_poll();
 
     g_main_context_release(context);
