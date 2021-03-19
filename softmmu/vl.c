@@ -1722,6 +1722,10 @@ typedef struct QEMUOption {
     uint32_t arch_mask;
 } QEMUOption;
 
+
+/*
+ * 全局参数存在数组
+ */
 static const QEMUOption qemu_options[] = {
     { "h", 0, QEMU_OPTION_h, QEMU_ARCH_ALL },
 #define QEMU_OPTIONS_GENERATE_OPTIONS
@@ -2399,6 +2403,9 @@ static void qemu_run_machine_init_done_notifiers(void)
     notifier_list_notify(&machine_init_done_notifiers, NULL);
 }
 
+/*
+ * 用于解析参数
+ */
 static const QEMUOption *lookup_opt(int argc, char **argv,
                                     const char **poptarg, int *poptind)
 {
@@ -2916,6 +2923,9 @@ void qemu_init(int argc, char **argv, char **envp)
     atexit(qemu_run_exit_notifiers);
     qemu_init_exec_dir(argv[0]);
 
+	/*
+	 * 调用对像模型的init的函数
+	 */
     module_call_init(MODULE_INIT_QOM);
     module_call_init(MODULE_INIT_MIGRATION);
 
@@ -3010,6 +3020,9 @@ void qemu_init(int argc, char **argv, char **envp)
         } else {
             const QEMUOption *popt;
 
+			/*
+			 * 调用lookup_opt来解析参数
+			 */
             popt = lookup_opt(argc, argv, &optarg, &optind);
             if (!(popt->arch_mask & arch_type)) {
                 error_report("Option not supported for this target");

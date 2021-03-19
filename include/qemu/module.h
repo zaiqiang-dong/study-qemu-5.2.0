@@ -26,6 +26,9 @@ void DSO_STAMP_FUN(void);
 void qemu_module_dummy(void);
 
 #define module_init(function, type)                                         \
+/*
+ * 带有 constructor 属性的都会先于main函数执行
+ */
 static void __attribute__((constructor)) do_qemu_init_ ## function(void)    \
 {                                                                           \
     register_dso_module_init(function, type);                               \

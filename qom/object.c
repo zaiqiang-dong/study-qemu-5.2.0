@@ -76,6 +76,11 @@ static Type type_interface;
 
 static GHashTable *type_table_get(void)
 {
+	/*
+	 * 静态 QOM 对像类型 hash表
+	 * 通过 g_hash_table_new 创建
+	 * 本质上是全局唯一的(单例)
+	 */
     static GHashTable *type_table;
 
     if (type_table == NULL) {
@@ -138,8 +143,15 @@ static TypeImpl *type_new(const TypeInfo *info)
 static TypeImpl *type_register_internal(const TypeInfo *info)
 {
     TypeImpl *ti;
+
+	/*
+	 * 创建一个新的类型定义
+	 */
     ti = type_new(info);
 
+	/*
+	 * 加入全局类型表
+	 */
     type_table_add(ti);
     return ti;
 }

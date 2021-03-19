@@ -24,6 +24,10 @@
 
 #include "kvm-cpus.h"
 
+
+/*
+ * VCPU线程函数
+ */
 static void *kvm_vcpu_thread_fn(void *arg)
 {
     CPUState *cpu = arg;
@@ -61,6 +65,9 @@ static void *kvm_vcpu_thread_fn(void *arg)
     return NULL;
 }
 
+/*
+ * 启动VCPU线程
+ */
 static void kvm_start_vcpu_thread(CPUState *cpu)
 {
     char thread_name[VCPU_THREAD_NAME_SIZE];

@@ -73,8 +73,15 @@ void register_module_init(void (*fn)(void), module_init_type type)
     e->init = fn;
     e->type = type;
 
+	/*
+	 * 根据类型,从 init_type_list数组中找到对应类型的list
+	 */
     l = find_type(type);
 
+	/*
+	 * 将新注册的module加入到队列尾
+	 * 在main函数进入会逐个调用其 init 函数
+	 */
     QTAILQ_INSERT_TAIL(l, e, node);
 }
 

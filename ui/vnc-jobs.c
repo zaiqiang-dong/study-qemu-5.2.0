@@ -316,6 +316,9 @@ static void vnc_queue_clear(VncJobQueue *q)
     queue = NULL; /* Unset global queue */
 }
 
+/*
+ * VNC线程函数
+ */
 static void *vnc_worker_thread(void *arg)
 {
     VncJobQueue *queue = arg;
@@ -331,6 +334,10 @@ static bool vnc_worker_thread_running(void)
 {
     return queue; /* Check global queue */
 }
+
+/*
+ * 启动VNC线程
+ */
 
 void vnc_start_worker_thread(void)
 {
