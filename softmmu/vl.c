@@ -2966,6 +2966,9 @@ void qemu_init(int argc, char **argv, char **envp)
     runstate_init();
     precopy_infrastructure_init();
     postcopy_infrastructure_init();
+	/*
+	 * 监视器初始化
+	 */
     monitor_init_globals();
 
     if (qcrypto_init(&err) < 0) {
