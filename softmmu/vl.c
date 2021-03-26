@@ -4385,6 +4385,7 @@ void qemu_init(int argc, char **argv, char **envp)
     }
 
     /* from here on runstate is RUN_STATE_PRELAUNCH */
+	//初始化模拟的主板, 默认是i440FX
     machine_run_board_init(current_machine);
 
     /*

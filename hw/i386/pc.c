@@ -965,6 +965,7 @@ void pc_memory_init(PCMachineState *pcms,
     }
 
     /* Initialize PC system firmware */
+	//BIOS相关初始化
     pc_system_firmware_init(pcms, rom_memory);
 
     option_rom_mr = g_malloc(sizeof(*option_rom_mr));
@@ -978,6 +979,7 @@ void pc_memory_init(PCMachineState *pcms,
                                         option_rom_mr,
                                         1);
 
+	//这块配置区域用于QEMU向BIOS传送配置数据
     fw_cfg = fw_cfg_arch_create(machine,
                                 x86ms->boot_cpus, x86ms->apic_id_limit);
 
@@ -995,6 +997,7 @@ void pc_memory_init(PCMachineState *pcms,
         fw_cfg_add_file(fw_cfg, "etc/reserved-memory-end", val, sizeof(*val));
     }
 
+	//加载内核
     if (linux_boot) {
         x86_load_linux(x86ms, fw_cfg, pcmc->acpi_data_size,
                        pcmc->pvh_enabled, pcmc->linuxboot_dma_enabled);

@@ -2079,6 +2079,7 @@ static int kvm_init(MachineState *ms)
     }
 
     do {
+		//创建虚拟机
         ret = kvm_ioctl(s, KVM_CREATE_VM, type);
     } while (ret == -EINTR);
 

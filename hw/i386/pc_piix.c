@@ -74,6 +74,7 @@ static const int ide_irq[MAX_IDE_BUS] = { 14, 15 };
 #endif
 
 /* PC hardware initialisation */
+// PC硬件初始化
 static void pc_init1(MachineState *machine,
                      const char *host_type, const char *pci_type)
 {
@@ -156,6 +157,7 @@ static void pc_init1(MachineState *machine,
         }
     }
 
+	// VCPU相关初始化
     x86_cpus_init(x86ms, pcmc->default_cpu_version);
 
     if (pcmc->kvmclock_enabled) {
@@ -184,6 +186,7 @@ static void pc_init1(MachineState *machine,
 
     /* allocate ram and load rom/bios */
     if (!xen_enabled()) {
+		// 内存初始化
         pc_memory_init(pcms, system_memory,
                        rom_memory, &ram_memory);
     } else {
@@ -196,6 +199,7 @@ static void pc_init1(MachineState *machine,
 
     gsi_state = pc_gsi_create(&x86ms->gsi, pcmc->pci_enabled);
 
+	//PCI总线
     if (pcmc->pci_enabled) {
         PIIX3State *piix3;
 
@@ -220,6 +224,7 @@ static void pc_init1(MachineState *machine,
     }
     isa_bus_irqs(isa_bus, x86ms->gsi);
 
+	//中断控制器
     pc_i8259_create(isa_bus, gsi_state->i8259_irq);
 
     if (pcmc->pci_enabled) {
@@ -230,6 +235,7 @@ static void pc_init1(MachineState *machine,
         x86_register_ferr_irq(x86ms->gsi[13]);
     }
 
+	//VGA显卡
     pc_vga_init(isa_bus, pcmc->pci_enabled ? pci_bus : NULL);
 
     assert(pcms->vmport != ON_OFF_AUTO__MAX);
@@ -238,9 +244,11 @@ static void pc_init1(MachineState *machine,
     }
 
     /* init basic PC hardware */
+	// 低速硬件设备
     pc_basic_device_init(pcms, isa_bus, x86ms->gsi, &rtc_state, true,
                          0x4);
 
+	//网卡初始化
     pc_nic_init(pcmc, isa_bus, pci_bus);
 
     if (pcmc->pci_enabled) {
