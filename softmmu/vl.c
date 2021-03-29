@@ -2461,6 +2461,7 @@ static MachineClass *select_machine(void)
 
     optarg = qemu_opt_get(opts, "type");
     if (optarg) {
+		//从 machines 中选择启动参数中指定的machine
         machine_class = machine_parse(optarg, machines);
     }
 
@@ -2745,6 +2746,7 @@ static int do_configure_accelerator(void *opaque, QemuOpts *opts, Error **errp)
                      accel,
                      &error_fatal);
 
+	//初始化
     ret = accel_init_machine(accel, current_machine);
     if (ret < 0) {
         *p_init_failed = true;
@@ -2765,6 +2767,8 @@ static void configure_accelerators(const char *progname)
     qemu_opts_foreach(qemu_find_opts("icount"),
                       do_configure_icount, NULL, &error_fatal);
 
+	// 这里获取加速器的类型,我们使用了 --enable-kvm,所以这里是kvm
+	// 默认是TCG
     accel = qemu_opt_get(qemu_get_machine_opts(), "accel");
     if (QTAILQ_EMPTY(&qemu_accel_opts.head)) {
         char **accel_list, **tmp;
@@ -2813,6 +2817,7 @@ static void configure_accelerators(const char *progname)
         }
     }
 
+	//调用 accelerator 的配置
     if (!qemu_opts_foreach(qemu_find_opts("accel"),
                            do_configure_accelerator, &init_failed, &error_fatal)) {
         if (!init_failed) {
@@ -3889,6 +3894,7 @@ void qemu_init(int argc, char **argv, char **envp)
 
     configure_rtc(qemu_find_opts_singleton("rtc"));
 
+	// 选择机制,我们这里是x86
     machine_class = select_machine();
     object_set_machine_compat_props(machine_class->compat_props);
 
@@ -3948,6 +3954,7 @@ void qemu_init(int argc, char **argv, char **envp)
         }
     }
 
+	//内存相关初始化
     cpu_exec_init_all();
 
     if (machine_class->hw_version) {
@@ -4190,6 +4197,7 @@ void qemu_init(int argc, char **argv, char **envp)
      * Note: uses machine properties such as kernel-irqchip, must run
      * after machine_set_property().
      */
+	//配置加速器
     configure_accelerators(argv[0]);
 
     /*

@@ -447,13 +447,17 @@ struct MemoryRegion {
     bool flush_coalesced_mmio;
     uint8_t dirty_log_mask;
     bool is_iommu;
+    //实际分配的物理内存
     RAMBlock *ram_block;
     Object *owner;
 
+    // MemoryRegion 操作函数
     const MemoryRegionOps *ops;
     void *opaque;
+    //上一级 MemoryRegion
     MemoryRegion *container;
     Int128 size;
+    // 表示所在虚拟机的物理地址
     hwaddr addr;
     void (*destructor)(MemoryRegion *mr);
     uint64_t align;
@@ -464,8 +468,11 @@ struct MemoryRegion {
     uint8_t vga_logging_count;
     MemoryRegion *alias;
     hwaddr alias_offset;
+    //当内存区域重合时决定覆盖区域
     int32_t priority;
+    //子 MemoryRegion 链表
     QTAILQ_HEAD(, MemoryRegion) subregions;
+    //兄弟 MemoryRegion
     QTAILQ_ENTRY(MemoryRegion) subregions_link;
     QTAILQ_HEAD(, CoalescedMemoryRange) coalesced;
     const char *name;
@@ -728,9 +735,11 @@ struct AddressSpace {
     /* private: */
     struct rcu_head rcu;
     char *name;
+    //根
     MemoryRegion *root;
 
     /* Accessed via RCU.  */
+    //平坦视图下的模型
     struct FlatView *current_map;
 
     int ioeventfd_nb;

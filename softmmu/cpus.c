@@ -446,6 +446,7 @@ void qemu_cpu_kick(CPUState *cpu)
     if (cpus_accel->kick_vcpu_thread) {
         cpus_accel->kick_vcpu_thread(cpu);
     } else { /* default */
+		//kvm情况,会执行到这里
         cpus_kick_thread(cpu);
     }
 }

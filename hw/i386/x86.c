@@ -108,6 +108,7 @@ void x86_cpu_new(X86MachineState *x86ms, int64_t apic_id, Error **errp)
     if (!object_property_set_uint(cpu, "apic-id", apic_id, errp)) {
         goto out;
     }
+	//这里调用 target/i386/cpu.c : x86_cpu_realizefn
     qdev_realize(DEVICE(cpu), NULL, errp);
 
 out:
@@ -1058,6 +1059,7 @@ void x86_bios_rom_init(MemoryRegion *rom_memory, bool isapc_ram_fw)
     int bios_size, isa_bios_size;
     int ret;
 
+	// bios_name = bios-256k.bin
     /* BIOS load */
     if (bios_name == NULL) {
         bios_name = BIOS_FILENAME;

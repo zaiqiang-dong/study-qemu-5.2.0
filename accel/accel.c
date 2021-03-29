@@ -52,6 +52,7 @@ int accel_init_machine(AccelState *accel, MachineState *ms)
     int ret;
     ms->accelerator = accel;
     *(acc->allowed) = true;
+	//这里如是是kvm 会调用 kvm_init
     ret = acc->init_machine(ms);
     if (ret < 0) {
         ms->accelerator = NULL;

@@ -2638,6 +2638,7 @@ static void tcg_commit(MemoryListener *listener)
 
 static void memory_map_init(void)
 {
+	//初始化 system_memory system_io
     system_memory = g_malloc(sizeof(*system_memory));
 
     memory_region_init(system_memory, NULL, "system", UINT64_MAX);
@@ -3032,6 +3033,7 @@ void cpu_register_map_client(QEMUBH *bh)
     qemu_mutex_unlock(&map_client_list_lock);
 }
 
+//内存相关初始化
 void cpu_exec_init_all(void)
 {
     qemu_mutex_init(&ram_list.mutex);
