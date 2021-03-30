@@ -3954,7 +3954,7 @@ void qemu_init(int argc, char **argv, char **envp)
         }
     }
 
-	//内存相关初始化
+	// 主要是内存相关初始化
     cpu_exec_init_all();
 
     if (machine_class->hw_version) {

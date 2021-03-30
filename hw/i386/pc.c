@@ -898,10 +898,12 @@ void pc_memory_init(PCMachineState *pcms,
      */
     *ram_memory = machine->ram;
     ram_below_4g = g_malloc(sizeof(*ram_below_4g));
+	//分配一个 ram_below_4g 区域加入到 ram_memory
     memory_region_init_alias(ram_below_4g, NULL, "ram-below-4g", machine->ram,
                              0, x86ms->below_4g_mem_size);
     memory_region_add_subregion(system_memory, 0, ram_below_4g);
     e820_add_entry(0, x86ms->below_4g_mem_size, E820_RAM);
+	//如果虚拟机的内存大于4G,需要做如下操作
     if (x86ms->above_4g_mem_size > 0) {
         ram_above_4g = g_malloc(sizeof(*ram_above_4g));
         memory_region_init_alias(ram_above_4g, NULL, "ram-above-4g",
