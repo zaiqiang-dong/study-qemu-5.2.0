@@ -2231,6 +2231,7 @@ static int kvm_init(MachineState *ms)
         kvm_irqchip_create(s);
     }
 
+	/* 内核 listener 初始化与注册 */
     if (kvm_eventfds_allowed) {
         s->memory_listener.listener.eventfd_add = kvm_mem_ioeventfd_add;
         s->memory_listener.listener.eventfd_del = kvm_mem_ioeventfd_del;
