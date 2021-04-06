@@ -4483,6 +4483,7 @@ void qemu_init(int argc, char **argv, char **envp)
      * to be reset. Note that this will *not* reset any Device objects
      * which are not attached to some part of the qbus tree!
      */
+	//内存重置
     qemu_register_reset(resettable_cold_reset_fn, sysbus_get_default());
     qemu_run_machine_init_done_notifiers();
 
@@ -4526,6 +4527,7 @@ void qemu_init(int argc, char **argv, char **envp)
             exit(1);
         }
     } else if (autostart) {
+		//启动所有VCPU线程
         vm_start();
     }
 

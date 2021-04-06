@@ -157,7 +157,7 @@ static void pc_init1(MachineState *machine,
         }
     }
 
-	// VCPU相关初始化
+	// VCPU创建与初始化
     x86_cpus_init(x86ms, pcmc->default_cpu_version);
 
     if (pcmc->kvmclock_enabled) {

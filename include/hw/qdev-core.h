@@ -212,7 +212,9 @@ struct BusClass {
     ObjectClass parent_class;
 
     /* FIXME first arg should be BusState */
+    //打印一个设备
     void (*print_dev)(Monitor *mon, DeviceState *dev, int indent);
+    //得到设备路径
     char *(*get_dev_path)(DeviceState *dev);
 
     /*
@@ -220,6 +222,7 @@ struct BusClass {
      * with OF spec http://forthworks.com/standards/of1275.pdf. Individual bus
      * bindings can be found at http://playground.sun.com/1275/bindings/.
      */
+    //得到设备在firmware中的路径
     char *(*get_fw_dev_path)(DeviceState *dev);
 
     void (*reset)(BusState *bus);
@@ -232,12 +235,15 @@ struct BusClass {
      */
     bool (*check_address)(BusState *bus, DeviceState *dev, Error **errp);
 
+    // realize 回调
     BusRealize realize;
     BusUnrealize unrealize;
 
     /* maximum devices allowed on the bus, 0: no limit. */
+    //最大的设备数
     int max_dev;
     /* number of automatically allocated bus ids (e.g. ide.0) */
+    //自动生成的设备id
     int automatic_ids;
 };
 
@@ -260,6 +266,7 @@ struct BusState {
     DeviceState *parent;
     char *name;
     HotplugHandler *hotplug_handler;
+    //最大的设备数
     int max_index;
     bool realized;
     int num_children;
@@ -270,6 +277,7 @@ struct BusState {
      */
 
     QTAILQ_HEAD(, BusChild) children;
+    //连接在总线的设备
     QLIST_ENTRY(BusState) sibling;
     ResettableState reset;
 };
