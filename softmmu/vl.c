@@ -4485,6 +4485,8 @@ void qemu_init(int argc, char **argv, char **envp)
      */
 	//内存重置
     qemu_register_reset(resettable_cold_reset_fn, sysbus_get_default());
+	//系统初始化结束后，通知之前注册过的notifiers,进行一些后续的操作
+	//比如会进行acpi表的构建
     qemu_run_machine_init_done_notifiers();
 
     if (rom_check_and_register_reset() != 0) {

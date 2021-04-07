@@ -237,6 +237,9 @@ static void i440fx_realize(PCIDevice *dev, Error **errp)
     }
 }
 
+// host_type =  TYPE_I440FX_PCI_HOST_BRIDGE "i440FX-pcihost"
+// pci_type = TYPE_I440FX_PCI_DEVICE "i440FX"
+
 PCIBus *i440fx_init(const char *host_type, const char *pci_type,
                     PCII440FXState **pi440fx_state,
                     MemoryRegion *address_space_mem,

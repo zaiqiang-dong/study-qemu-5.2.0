@@ -166,6 +166,7 @@ static void pc_init1(MachineState *machine,
 
     if (pcmc->pci_enabled) {
         pci_memory = g_new(MemoryRegion, 1);
+		//创建 pci_memory 内存
         memory_region_init(pci_memory, NULL, "pci", UINT64_MAX);
         rom_memory = pci_memory;
     } else {
@@ -203,6 +204,7 @@ static void pc_init1(MachineState *machine,
     if (pcmc->pci_enabled) {
         PIIX3State *piix3;
 
+		//南桥芯片
         pci_bus = i440fx_init(host_type,
                               pci_type,
                               &i440fx_state,
@@ -212,6 +214,7 @@ static void pc_init1(MachineState *machine,
                               pci_memory, ram_memory);
         pcms->bus = pci_bus;
 
+		//北桥芯片
         piix3 = piix3_create(pci_bus, &isa_bus);
         piix3->pic = x86ms->gsi;
         piix3_devfn = piix3->dev.devfn;

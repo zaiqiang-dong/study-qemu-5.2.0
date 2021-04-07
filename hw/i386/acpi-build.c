@@ -2681,6 +2681,7 @@ static const VMStateDescription vmstate_acpi_build = {
     },
 };
 
+//构建acpi表
 void acpi_setup(void)
 {
     PCMachineState *pcms = PC_MACHINE(qdev_get_machine());

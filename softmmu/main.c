@@ -54,6 +54,9 @@ int main(int argc, char **argv, char **envp)
 	 * 主循环
 	 */
     qemu_main_loop();
+	/*
+	 * 退出清理
+	 */
     qemu_cleanup();
 
     return 0;

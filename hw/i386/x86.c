@@ -1080,6 +1080,7 @@ void x86_bios_rom_init(MemoryRegion *rom_memory, bool isapc_ram_fw)
     if (!isapc_ram_fw) {
         memory_region_set_readonly(bios, true);
     }
+	// 装载bios
     ret = rom_add_file_fixed(bios_name, (uint32_t)(-bios_size), -1);
     if (ret != 0) {
     bios_error:
