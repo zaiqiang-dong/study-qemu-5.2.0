@@ -330,6 +330,7 @@ host_memory_backend_memory_complete(UserCreatable *uc, Error **errp)
     uint64_t sz;
 
     if (bc->alloc) {
+		// 这里会调用 ram_backend_memory_alloc
         bc->alloc(backend, &local_err);
         if (local_err) {
             goto out;

@@ -2852,6 +2852,7 @@ static void create_default_memdev(MachineState *ms, const char *path)
     /* Ensure backend's memory region name is equal to mc->default_ram_id */
     object_property_set_bool(obj, "x-use-canonical-path-for-ramblock-id",
                              false, &error_fatal);
+	//这里会调用 host_memory_backend_memory_complete
     user_creatable_complete(USER_CREATABLE(obj), &error_fatal);
     object_unref(obj);
     object_property_set_str(OBJECT(ms), "memory-backend", mc->default_ram_id,
@@ -4389,6 +4390,7 @@ void qemu_init(int argc, char **argv, char **envp)
 
     if (machine_class->default_ram_id && current_machine->ram_size &&
         numa_uses_legacy_mem() && !current_machine->ram_memdev_id) {
+		//pc.ram的初始化
         create_default_memdev(current_machine, mem_path);
     }
 

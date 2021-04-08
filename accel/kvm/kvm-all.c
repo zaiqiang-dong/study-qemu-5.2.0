@@ -2231,7 +2231,10 @@ static int kvm_init(MachineState *ms)
         kvm_irqchip_create(s);
     }
 
-	/* 内核 listener 初始化与注册 */
+	/*
+	 * 内存 listener 初始化与注册
+	 * 当虚拟机内存发生变化时需要通知道到内核，保证EPT可以正常工作
+	 */
     if (kvm_eventfds_allowed) {
         s->memory_listener.listener.eventfd_add = kvm_mem_ioeventfd_add;
         s->memory_listener.listener.eventfd_del = kvm_mem_ioeventfd_del;

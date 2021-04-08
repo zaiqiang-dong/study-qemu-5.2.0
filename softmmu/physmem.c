@@ -114,11 +114,13 @@ typedef PhysPageEntry Node[P_L2_SIZE];
 typedef struct PhysPageMap {
     struct rcu_head rcu;
 
+	//nb表示动态数组中有效个数，alloc表示总共分配的个数
     unsigned sections_nb;
     unsigned sections_nb_alloc;
     unsigned nodes_nb;
     unsigned nodes_nb_alloc;
     Node *nodes;
+	// 表示 AddressSpace 中所有的 MemoryRegionSection
     MemoryRegionSection *sections;
 } PhysPageMap;
 

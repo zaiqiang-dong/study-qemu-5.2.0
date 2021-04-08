@@ -6509,6 +6509,7 @@ static void x86_cpu_filter_features(X86CPU *cpu, bool verbose)
     }
 }
 
+/* X86 cpu 实现 */
 static void x86_cpu_realizefn(DeviceState *dev, Error **errp)
 {
     CPUState *cs = CPU(dev);
