@@ -1220,6 +1220,7 @@ void pc_i8259_create(ISABus *isa_bus, qemu_irq *i8259_irqs)
     qemu_irq *i8259;
 
     if (kvm_pic_in_kernel()) {
+		/* pic在kvm中模拟 */
         i8259 = kvm_i8259_init(isa_bus);
     } else if (xen_enabled()) {
         i8259 = xen_interrupt_controller_init();

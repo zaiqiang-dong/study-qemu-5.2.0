@@ -32,8 +32,10 @@ DECLARE_INSTANCE_CHECKER(struct IRQState, IRQ,
 struct IRQState {
     Object parent_obj;
 
+	/* 中断执行函数 */
     qemu_irq_handler handler;
     void *opaque;
+	/* 引脚号 */
     int n;
 };
 

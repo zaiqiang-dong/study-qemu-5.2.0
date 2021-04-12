@@ -204,7 +204,7 @@ static void pc_init1(MachineState *machine,
     if (pcmc->pci_enabled) {
         PIIX3State *piix3;
 
-		//南桥芯片
+		//北桥芯片
         pci_bus = i440fx_init(host_type,
                               pci_type,
                               &i440fx_state,
@@ -214,8 +214,9 @@ static void pc_init1(MachineState *machine,
                               pci_memory, ram_memory);
         pcms->bus = pci_bus;
 
-		//北桥芯片
+		//南桥芯片
         piix3 = piix3_create(pci_bus, &isa_bus);
+		/* 将irq 赋值给piix3->pci */
         piix3->pic = x86ms->gsi;
         piix3_devfn = piix3->dev.devfn;
     } else {
@@ -225,6 +226,7 @@ static void pc_init1(MachineState *machine,
                               &error_abort);
         pcms->hpet_enabled = false;
     }
+	/* 将irq 赋值给isa_bus->pci */
     isa_bus_irqs(isa_bus, x86ms->gsi);
 
 	//中断控制器
