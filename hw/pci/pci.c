@@ -453,7 +453,9 @@ PCIBus *pci_root_bus_new(DeviceState *parent, const char *name,
 {
     PCIBus *bus;
 
+	/* 创建 pci.0 设备 */
     bus = PCI_BUS(qbus_create(typename, parent, name));
+	/* 初始化 */
     pci_root_bus_init(bus, parent, address_space_mem, address_space_io,
                       devfn_min);
     return bus;

@@ -348,9 +348,11 @@ static void main_system_bus_create(void)
     OBJECT(main_system_bus)->free = g_free;
 }
 
+/* 获取根总线，如果不存在会创建 */
 BusState *sysbus_get_default(void)
 {
     if (!main_system_bus) {
+		/* 创建根总线 */
         main_system_bus_create();
     }
     return main_system_bus;

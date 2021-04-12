@@ -258,14 +258,21 @@ PCIBus *i440fx_init(const char *host_type, const char *pci_type,
     unsigned i;
     I440FXState *i440fx;
 
+	/* host_type =  TYPE_I440FX_PCI_HOST_BRIDGE "i440FX-pcihost" */
     dev = qdev_new(host_type);
     s = PCI_HOST_BRIDGE(dev);
+	/* 创建PCI根总线 */
     b = pci_root_bus_new(dev, NULL, pci_address_space,
                          address_space_io, 0, TYPE_PCI_BUS);
     s->bus = b;
+	/* 把 i440fx 北桥芯片加入pci.0 */
     object_property_add_child(qdev_get_machine(), "i440fx", OBJECT(dev));
     sysbus_realize_and_unref(SYS_BUS_DEVICE(dev), &error_fatal);
 
+	/*
+	 * 下面这段，主要是创建北桥属于pci的那部分，物理上与上面的i440fx
+	 * 是包含在同一个物理芯片上的
+	 */
     d = pci_create_simple(b, 0, pci_type);
     *pi440fx_state = I440FX_PCI_DEVICE(d);
     f = *pi440fx_state;

@@ -98,14 +98,18 @@ struct DeviceClass {
     ObjectClass parent_class;
     /*< public >*/
 
+    /* 设备类型 */
     DECLARE_BITMAP(categories, DEVICE_CATEGORY_MAX);
+    /* 设备在固件中的路径 */
     const char *fw_name;
+    /* 设备描述 */
     const char *desc;
 
     /*
      * The underscore at the end ensures a compile-time error if someone
      * assigns to dc->props instead of using device_class_set_props.
      */
+    /* 设备属性 */
     Property *props_;
 
     /*
@@ -120,6 +124,7 @@ struct DeviceClass {
      * TODO remove once we're there
      */
     bool user_creatable;
+    /* 是否支持热插拔 */
     bool hotpluggable;
 
     /* callbacks */
@@ -128,14 +133,18 @@ struct DeviceClass {
      * resettable class interface to implement a multi-phase reset.
      * TODO: remove once every reset callback is unused
      */
+    /* 设置重置 */
     DeviceReset reset;
+    /* 设备具现化 */
     DeviceRealize realize;
+    /* 设备反具现化 */
     DeviceUnrealize unrealize;
 
     /* device state */
     const VMStateDescription *vmsd;
 
     /* Private to qdev / bus.  */
+    /* 设备挂载的总线类型 */
     const char *bus_type;
 };
 
@@ -175,17 +184,24 @@ struct DeviceState {
     Object parent_obj;
     /*< public >*/
 
+    /* 设备名 */
     const char *id;
     char *canonical_path;
+    /* 是否已经 realize */
     bool realized;
     bool pending_deleted_event;
+    /* 设备参数 */
     QemuOpts *opts;
+    /* 是否是通过热插拔加入 */
     int hotplugged;
     bool allow_unplug_during_migration;
     BusState *parent_bus;
+    /* 表示设备连接的gpios */
     QLIST_HEAD(, NamedGPIOList) gpios;
     QLIST_HEAD(, NamedClockList) clocks;
+    /* 下属总线 */
     QLIST_HEAD(, BusState) child_bus;
+    /* 下属总线个数 */
     int num_child_bus;
     int instance_id_alias;
     int alias_required_for_version;
