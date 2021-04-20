@@ -1209,6 +1209,7 @@ void pc_nic_init(PCMachineClass *pcmc, ISABus *isa_bus, PCIBus *pci_bus)
         if (g_str_equal(model, "ne2k_isa")) {
             pc_init_ne2k_isa(isa_bus, nd);
         } else {
+			/* 关键调用点 */
             pci_nic_init_nofail(nd, pci_bus, model, NULL);
         }
     }

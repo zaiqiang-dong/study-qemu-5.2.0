@@ -1966,6 +1966,7 @@ PCIDevice *pci_nic_init_nofail(NICInfo *nd, PCIBus *rootbus,
 
     pci_dev = pci_new(devfn, nd->model);
     dev = &pci_dev->qdev;
+	/* 这里将会设置后端设备 这里会调用 set_netdev */
     qdev_set_nic_properties(dev, nd);
     pci_realize_and_unref(pci_dev, bus, &error_fatal);
     g_ptr_array_free(pci_nic_models, true);

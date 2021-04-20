@@ -4291,6 +4291,7 @@ void qemu_init(int argc, char **argv, char **envp)
 #endif
     }
 
+	/* 网卡设备 */
     if (net_init_clients(&err) < 0) {
         error_report_err(err);
         exit(1);

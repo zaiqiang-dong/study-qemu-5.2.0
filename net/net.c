@@ -252,6 +252,7 @@ static void qemu_net_client_setup(NetClientState *nc,
         nc->peer = peer;
         peer->peer = nc;
     }
+	/* 插入到 net_clients 尾部 */
     QTAILQ_INSERT_TAIL(&net_clients, nc, next);
 
     nc->incoming_queue = qemu_new_net_queue(qemu_deliver_packet_iov, nc);
@@ -884,6 +885,7 @@ static int net_init_nic(const Netdev *netdev, const char *name,
                         NetClientState *peer, Error **errp)
 {
     int idx;
+	/* NICInfo 保存网卡信息，如mac等信息*/
     NICInfo *nd;
     const NetLegacyNicOptions *nic;
 
@@ -896,11 +898,13 @@ static int net_init_nic(const Netdev *netdev, const char *name,
         return -1;
     }
 
+	/* 使用一个空闲的nd */
     nd = &nd_table[idx];
 
     memset(nd, 0, sizeof(*nd));
 
     if (nic->has_netdev) {
+		/* 关键调用点 */
         nd->netdev = qemu_find_netdev(nic->netdev);
         if (!nd->netdev) {
             error_setg(errp, "netdev '%s' not found", nic->netdev);
@@ -929,6 +933,7 @@ static int net_init_nic(const Netdev *netdev, const char *name,
                    "NIC cannot have multicast MAC address (odd 1st byte)");
         return -1;
     }
+	/* 设置默认的网卡地址 */
     qemu_macaddr_default_if_unset(&nd->macaddr);
 
     if (nic->has_vectors) {
@@ -986,7 +991,7 @@ static int net_client_init1(const Netdev *netdev, bool is_netdev, Error **errp)
 
     if (is_netdev) {
         if (netdev->type == NET_CLIENT_DRIVER_NIC ||
-            !net_client_init_fun[netdev->type]) {
+            !net_client_init_fun[netdev->type]/* 关键调用点 */) {
             error_setg(errp, QERR_INVALID_PARAMETER_VALUE, "type",
                        "a netdev backend type");
             return -1;
@@ -996,7 +1001,7 @@ static int net_client_init1(const Netdev *netdev, bool is_netdev, Error **errp)
             return 0; /* nothing to do */
         }
         if (netdev->type == NET_CLIENT_DRIVER_HUBPORT ||
-            !net_client_init_fun[netdev->type]) {
+            !net_client_init_fun[netdev->type]/* 关键调用点 */) {
             error_setg(errp, QERR_INVALID_PARAMETER_VALUE, "type",
                        "a net backend type (maybe it is not compiled "
                        "into this binary)");
@@ -1004,6 +1009,12 @@ static int net_client_init1(const Netdev *netdev, bool is_netdev, Error **errp)
         }
 
         /* Do not add to a hub if it's a nic with a netdev= parameter. */
+		/* 当指定了netdev不需要调用这里 */
+		/*
+		 * 调用条件是(2选1就行)
+		 * 1.是一个后端设备
+		 * 2.是一个前端设备但没有指定netdev
+		 * */
         if (netdev->type != NET_CLIENT_DRIVER_NIC ||
             !netdev->u.nic.has_netdev) {
             peer = net_hub_add_port(0, NULL, NULL);
@@ -1110,6 +1121,7 @@ static int net_client_init(QemuOpts *opts, bool is_netdev, Error **errp)
         qemu_opts_set_id(opts, g_strdup_printf("__org.qemu.net%i", idx++));
     }
 
+	/* object中会保存参数 */
     if (visit_type_Netdev(v, NULL, &object, errp)) {
         ret = net_client_init1(object, is_netdev, errp);
     }
@@ -1451,6 +1463,7 @@ static int net_param_nic(void *dummy, QemuOpts *opts, Error **errp)
         qemu_opt_set(opts, "type", "user", &error_abort);
     }
 
+	/* 从 nd_table 选一个空闲的出来,然后初始化 NICInfo 的数据 */
     ni = &nd_table[idx];
     memset(ni, 0, sizeof(*ni));
     ni->model = qemu_opt_get_del(opts, "model");
@@ -1477,6 +1490,7 @@ static int net_param_nic(void *dummy, QemuOpts *opts, Error **errp)
             goto out;
         }
     }
+	/* 没有设置mac，设置默认的 */
     qemu_macaddr_default_if_unset(&ni->macaddr);
 
     ret = net_client_init(opts, true, errp);
@@ -1498,6 +1512,7 @@ int net_init_clients(Error **errp)
 
     QTAILQ_INIT(&net_clients);
 
+	/* net_init_netdev 与 net_init_nic 均会调用 net_client_init */
     if (qemu_opts_foreach(qemu_find_opts("netdev"),
                           net_init_netdev, NULL, errp)) {
         return -1;

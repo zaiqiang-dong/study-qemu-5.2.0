@@ -57,6 +57,7 @@ static void virtio_balloon_pci_class_init(ObjectClass *klass, void *data)
     DeviceClass *dc = DEVICE_CLASS(klass);
     VirtioPCIClass *k = VIRTIO_PCI_CLASS(klass);
     PCIDeviceClass *pcidev_k = PCI_DEVICE_CLASS(klass);
+	/* 设置 realize 函数 */
     k->realize = virtio_balloon_pci_realize;
     set_bit(DEVICE_CATEGORY_MISC, dc->categories);
     device_class_set_props(dc, virtio_balloon_pci_properties);
@@ -66,10 +67,12 @@ static void virtio_balloon_pci_class_init(ObjectClass *klass, void *data)
     pcidev_k->class_id = PCI_CLASS_OTHERS;
 }
 
+/* 实例化 */
 static void virtio_balloon_pci_instance_init(Object *obj)
 {
     VirtIOBalloonPCI *dev = VIRTIO_BALLOON_PCI(obj);
 
+	/* 公共初始化 */
     virtio_instance_init_common(obj, &dev->vdev, sizeof(dev->vdev),
                                 TYPE_VIRTIO_BALLOON);
     object_property_add_alias(obj, "guest-stats", OBJECT(&dev->vdev),
