@@ -2108,6 +2108,7 @@ static int device_init_func(void *opaque, QemuOpts *opts, Error **errp)
 {
     DeviceState *dev;
 
+	/* 添加设备 */
     dev = qdev_device_add(opts, errp);
     if (!dev && *errp) {
         error_report_err(*errp);
@@ -4426,6 +4427,7 @@ void qemu_init(int argc, char **argv, char **envp)
 
     /* init generic devices */
     rom_set_order_override(FW_CFG_ORDER_OVERRIDE_DEVICE);
+	/* 处理device的参数 */
     qemu_opts_foreach(qemu_find_opts("device"),
                       device_init_func, NULL, &error_fatal);
 

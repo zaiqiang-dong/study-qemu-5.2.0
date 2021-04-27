@@ -97,14 +97,17 @@ typedef struct VRingPackedDescEvent {
 
 struct VirtQueue
 {
+	/* 对应kernel中的vring */
     VRing vring;
     VirtQueueElement *used_elems;
 
     /* Next head to pop */
+	/* 表示从avail vring 中取数据的索引 */
     uint16_t last_avail_idx;
     bool last_avail_wrap_counter;
 
     /* Last avail_idx read from VQ. */
+	/* 最近一次读取的index */
     uint16_t shadow_avail_idx;
     bool shadow_avail_wrap_counter;
 
@@ -118,6 +121,7 @@ struct VirtQueue
     bool signalled_used_valid;
 
     /* Notification enabled? */
+	/* 是否需要通知驱动 */
     bool notification;
 
     uint16_t queue_index;
@@ -127,6 +131,7 @@ struct VirtQueue
     uint16_t vector;
     VirtIOHandleOutput handle_output;
     VirtIOHandleAIOOutput handle_aio_output;
+	/* virtio设备 */
     VirtIODevice *vdev;
     EventNotifier guest_notifier;
     EventNotifier host_notifier;
@@ -2351,6 +2356,7 @@ static void virtio_queue_notify_vq(VirtQueue *vq)
     }
 }
 
+/* GUEST OS 操作通知函数 */
 void virtio_queue_notify(VirtIODevice *vdev, int n)
 {
     VirtQueue *vq = &vdev->vq[n];
@@ -2363,6 +2369,7 @@ void virtio_queue_notify(VirtIODevice *vdev, int n)
     if (vq->host_notifier_enabled) {
         event_notifier_set(&vq->host_notifier);
     } else if (vq->handle_output) {
+		/* 关键调用点 */
         vq->handle_output(vdev, vq);
 
         if (unlikely(vdev->start_on_kick)) {
@@ -2560,6 +2567,7 @@ static void virtio_irq(VirtQueue *vq)
     virtio_notify_vector(vq->vdev, vq->vector);
 }
 
+/* 用于通过GUEST OS virtio dev驱动 */
 void virtio_notify(VirtIODevice *vdev, VirtQueue *vq)
 {
     WITH_RCU_READ_LOCK_GUARD() {

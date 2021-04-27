@@ -1331,6 +1331,7 @@ static uint64_t virtio_pci_notify_read(void *opaque, hwaddr addr,
     return 0;
 }
 
+/* 处理通知,来息GUSET OS,virtio dev驱动的通知 */
 static void virtio_pci_notify_write(void *opaque, hwaddr addr,
                                     uint64_t val, unsigned size)
 {

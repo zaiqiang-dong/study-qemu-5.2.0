@@ -410,6 +410,8 @@ static void set_netdev(Object *obj, Visitor *v, const char *name,
         return;
     }
 
+	/* 关键调用点 */
+	/* 这里str就是我们在启动qemu中指定的id 我这里名叫"m" */
     queues = qemu_find_net_clients_except(str, peers,
                                           NET_CLIENT_DRIVER_NIC,
                                           MAX_QUEUE_NUM);

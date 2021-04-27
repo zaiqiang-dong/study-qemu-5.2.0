@@ -651,6 +651,7 @@ DeviceState *qdev_device_add(QemuOpts *opts, Error **errp)
     }
 
     /* create device */
+	/* 关键调用点 */
     dev = qdev_new(driver);
 
     /* Check whether the hotplug is allowed by the machine */
@@ -673,6 +674,7 @@ DeviceState *qdev_device_add(QemuOpts *opts, Error **errp)
     }
 
     dev->opts = opts;
+	/* 具现化设备 */
     if (!qdev_realize(DEVICE(dev), bus, errp)) {
         dev->opts = NULL;
         goto err_del_dev;

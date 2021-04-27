@@ -1874,6 +1874,8 @@ PciInfoList *qmp_query_pci(Error **errp)
 }
 
 /* Initialize a PCI NIC.  */
+/* nd = nd_table[?] */
+/* default_model = e1000 */
 PCIDevice *pci_nic_init_nofail(NICInfo *nd, PCIBus *rootbus,
                                const char *default_model,
                                const char *default_devaddr)
@@ -1926,6 +1928,7 @@ PCIDevice *pci_nic_init_nofail(NICInfo *nd, PCIBus *rootbus,
         exit(0);
     }
 
+	/* 查看是不是支持的网卡 ,e1000支持 */
     i = qemu_find_nic_model(nd, (const char **)pci_nic_models->pdata,
                             default_model);
     if (i < 0) {
@@ -1968,6 +1971,7 @@ PCIDevice *pci_nic_init_nofail(NICInfo *nd, PCIBus *rootbus,
     dev = &pci_dev->qdev;
 	/* 这里将会设置后端设备 这里会调用 set_netdev */
     qdev_set_nic_properties(dev, nd);
+	/* 具现化 */
     pci_realize_and_unref(pci_dev, bus, &error_fatal);
     g_ptr_array_free(pci_nic_models, true);
     return pci_dev;
