@@ -183,6 +183,7 @@ struct vhost_net *vhost_net_init(VhostNetOptions *options)
         net->dev.vq_index = net->nc->queue_index * net->dev.nvqs;
     }
 
+	/* 初始化vhost-net */
     r = vhost_dev_init(&net->dev, options->opaque,
                        options->backend_type, options->busyloop_timeout);
     if (r < 0) {

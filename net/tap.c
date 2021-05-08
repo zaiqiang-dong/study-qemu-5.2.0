@@ -694,6 +694,7 @@ static void net_init_tap_one(const NetdevTapOptions *tap, NetClientState *peer,
         }
     }
 
+	/* vhost 相关初始化 */
     if (tap->has_vhost ? tap->vhost :
         vhostfdname || (tap->has_vhostforce && tap->vhostforce)) {
         VhostNetOptions options;
@@ -725,6 +726,7 @@ static void net_init_tap_one(const NetdevTapOptions *tap, NetClientState *peer,
                 return;
             }
         } else {
+			/* 打开 vhost-net */
             vhostfd = open("/dev/vhost-net", O_RDWR);
             if (vhostfd < 0) {
                 if (tap->has_vhostforce && tap->vhostforce) {
@@ -738,8 +740,10 @@ static void net_init_tap_one(const NetdevTapOptions *tap, NetClientState *peer,
             }
             qemu_set_nonblock(vhostfd);
         }
+		/* 保存vhostfd */
         options.opaque = (void *)(uintptr_t)vhostfd;
 
+		/* 关键调用点 */
         s->vhost_net = vhost_net_init(&options);
         if (!s->vhost_net) {
             if (tap->has_vhostforce && tap->vhostforce) {

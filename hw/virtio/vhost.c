@@ -1257,6 +1257,7 @@ static int vhost_virtqueue_init(struct vhost_dev *dev,
     }
 
     file.fd = event_notifier_get_fd(&vq->masked_notifier);
+	/* 通过接口函数通信 */
     r = dev->vhost_ops->vhost_set_vring_call(dev, &file);
     if (r) {
         VHOST_OPS_DEBUG("vhost_set_vring_call failed");
@@ -1307,6 +1308,7 @@ int vhost_dev_init(struct vhost_dev *hdev, void *opaque,
         goto fail;
     }
 
+	/* 初始化 vhost virtqueue */
     for (i = 0; i < hdev->nvqs; ++i, ++n_initialized_vqs) {
         r = vhost_virtqueue_init(hdev, hdev->vqs + i, hdev->vq_index + i);
         if (r < 0) {
