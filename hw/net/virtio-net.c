@@ -233,14 +233,17 @@ static void virtio_net_vhost_status(VirtIONet *n, uint8_t status)
     NetClientState *nc = qemu_get_queue(n->nic);
     int queues = n->multiqueue ? n->max_queues : 1;
 
+	/* 如果没有使用vhost将直接返回 */
     if (!get_vhost_net(nc->peer)) {
         return;
     }
 
+	/* 判断的vhost net 是否已经启动，没有直接返回 */
     if ((virtio_net_started(n, status) && !nc->peer->link_down) ==
         !!n->vhost_started) {
         return;
     }
+	/* 启动之后 */
     if (!n->vhost_started) {
         int r, i;
 
@@ -273,12 +276,14 @@ static void virtio_net_vhost_status(VirtIONet *n, uint8_t status)
         }
 
         n->vhost_started = 1;
+		/* 通过 vhost_net_start 让虚拟机收发包通过 vhost net 完成 */
         r = vhost_net_start(vdev, n->nic->ncs, queues);
         if (r < 0) {
             error_report("unable to start vhost net: %d: "
                          "falling back on userspace virtio", -r);
             n->vhost_started = 0;
         }
+	/* 未启动情况 */
     } else {
         vhost_net_stop(vdev, n->nic->ncs, queues);
         n->vhost_started = 0;
