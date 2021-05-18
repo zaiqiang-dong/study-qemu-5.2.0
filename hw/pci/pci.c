@@ -885,6 +885,7 @@ static void pci_init_multifunction(PCIBus *bus, PCIDevice *dev, Error **errp)
 
 static void pci_config_alloc(PCIDevice *pci_dev)
 {
+	/* 分配配置空间 pci 256字节，pcie 4k字节*/
     int config_size = pci_config_size(pci_dev);
 
     pci_dev->config = g_malloc0(config_size);
@@ -1012,6 +1013,7 @@ static PCIDevice *do_pci_register_device(PCIDevice *pci_dev,
     DeviceState *dev = DEVICE(pci_dev);
     PCIBus *bus = pci_get_bus(pci_dev);
 
+	/* 设备号的处理 */
     /* Only pci bridges can be attached to extra PCI root buses */
     if (pci_bus_is_root(bus) && bus->parent_dev && !pc->is_bridge) {
         error_setg(errp,
@@ -1067,8 +1069,10 @@ static PCIDevice *do_pci_register_device(PCIDevice *pci_dev,
         pci_init_bus_master(pci_dev);
     }
     pci_dev->irq_state = 0;
+	/* 分配配置空间 pci 256字节，pcie 4k字节*/
     pci_config_alloc(pci_dev);
 
+	/* 各种id的设备 */
     pci_config_set_vendor_id(pci_dev->config, pc->vendor_id);
     pci_config_set_device_id(pci_dev->config, pc->device_id);
     pci_config_set_revision(pci_dev->config, pc->revision);
@@ -1091,6 +1095,7 @@ static PCIDevice *do_pci_register_device(PCIDevice *pci_dev,
     pci_init_cmask(pci_dev);
     pci_init_wmask(pci_dev);
     pci_init_w1cmask(pci_dev);
+	/* 如果是桥设备做相关处理 */
     if (pc->is_bridge) {
         pci_init_mask_bridge(pci_dev);
     }
@@ -1107,6 +1112,7 @@ static PCIDevice *do_pci_register_device(PCIDevice *pci_dev,
         config_write = pci_default_write_config;
     pci_dev->config_read = config_read;
     pci_dev->config_write = config_write;
+	/* 加入总线 */
     bus->devices[devfn] = pci_dev;
     pci_dev->version_id = 2; /* Current pci device vmstate version */
     return pci_dev;
@@ -2103,6 +2109,7 @@ PCIDevice *pci_find_device(PCIBus *bus, int bus_num, uint8_t devfn)
     return bus->devices[devfn];
 }
 
+/* pci 设备实现 */
 static void pci_qdev_realize(DeviceState *qdev, Error **errp)
 {
     PCIDevice *pci_dev = (PCIDevice *)qdev;
@@ -2120,6 +2127,7 @@ static void pci_qdev_realize(DeviceState *qdev, Error **errp)
         pci_dev->cap_present |= QEMU_PCI_CAP_EXPRESS;
     }
 
+	/* 完成基本初始化 */
     pci_dev = do_pci_register_device(pci_dev,
                                      object_get_typename(OBJECT(qdev)),
                                      pci_dev->devfn, errp);

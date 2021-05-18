@@ -206,8 +206,12 @@ static void i440fx_pcihost_initfn(Object *obj)
 {
     PCIHostState *s = PCI_HOST_BRIDGE(obj);
 
+	/* 下面的代码用于创建两个特殊的寄存器 */
+
+	/* 创建CONFIGADDR */
     memory_region_init_io(&s->conf_mem, obj, &pci_host_conf_le_ops, s,
                           "pci-conf-idx", 4);
+	/* 创建CONFIGDATA */
     memory_region_init_io(&s->data_mem, obj, &pci_host_data_le_ops, s,
                           "pci-conf-data", 4);
 }
