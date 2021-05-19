@@ -69,8 +69,10 @@ static void virtio_pci_notify(DeviceState *d, uint16_t vector)
     VirtIOPCIProxy *proxy = to_virtio_pci_proxy_fast(d);
 
     if (msix_enabled(&proxy->pci_dev))
+		/* pcie 通过msi-x来产生中断*/
         msix_notify(&proxy->pci_dev, vector);
     else {
+		/* pci 通过中断引脚来产生中断 */
         VirtIODevice *vdev = virtio_bus_get_device(&proxy->bus);
         pci_set_irq(&proxy->pci_dev, qatomic_read(&vdev->isr) & 1);
     }

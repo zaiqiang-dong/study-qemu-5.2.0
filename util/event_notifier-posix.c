@@ -46,6 +46,7 @@ int event_notifier_init(EventNotifier *e, int active)
     if (ret >= 0) {
         e->rfd = e->wfd = ret;
     } else {
+		/* 如果系统不支持eventfd将使用pipe模拟 */
         if (errno != ENOSYS) {
             return -errno;
         }
