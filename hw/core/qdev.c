@@ -1222,6 +1222,7 @@ void device_class_set_props(DeviceClass *dc, Property *props)
 {
     Property *prop;
 
+	/* DeviceClass props 赋值 */
     dc->props_ = props;
     for (prop = props; prop && prop->name; prop++) {
         qdev_class_add_legacy_property(dc, prop);

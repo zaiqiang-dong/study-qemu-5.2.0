@@ -109,7 +109,8 @@ struct DeviceClass {
      * The underscore at the end ensures a compile-time error if someone
      * assigns to dc->props instead of using device_class_set_props.
      */
-    /* 设备属性 */
+    /* 设备属性，和ObjectClass 的property 不是同一级的的*/
+    /* 目前理解没什么实际作用，仅仅是一种兼容手段 */
     Property *props_;
 
     /*
