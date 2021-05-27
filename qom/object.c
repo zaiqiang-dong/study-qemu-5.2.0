@@ -512,6 +512,7 @@ static void object_class_property_init_all(Object *obj)
 
 static void object_initialize_with_type(Object *obj, size_t size, TypeImpl *type)
 {
+	/* 类型初始化 这里主要是调用 class_init */
     type_initialize(type);
 
     g_assert(type->instance_size >= sizeof(Object));
@@ -521,9 +522,11 @@ static void object_initialize_with_type(Object *obj, size_t size, TypeImpl *type
     memset(obj, 0, type->instance_size);
     obj->class = type->class;
     object_ref(obj);
+	/* 属性初始化 */
     object_class_property_init_all(obj);
     obj->properties = g_hash_table_new_full(g_str_hash, g_str_equal,
                                             NULL, object_property_free);
+	/* 类型初始化之后再去创建对象 这里主要调用 instance_init*/
     object_init_with_type(obj, type);
     object_post_init_with_type(obj, type);
 }
