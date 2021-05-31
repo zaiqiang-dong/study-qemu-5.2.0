@@ -2447,7 +2447,7 @@ void memory_region_add_subregion(MemoryRegion *mr,
     subregion->priority = 0;
     memory_region_add_subregion_common(mr, offset, subregion);
 }
-
+/* 添加一个 MemoryRegion 到一个 container */
 void memory_region_add_subregion_overlap(MemoryRegion *mr,
                                          hwaddr offset,
                                          MemoryRegion *subregion,

@@ -2848,6 +2848,7 @@ static void create_default_memdev(MachineState *ms, const char *path)
         object_property_set_str(obj, "mem-path", path, &error_fatal);
     }
     object_property_set_int(obj, "size", ms->ram_size, &error_fatal);
+	/* 这里的 default_ram_id 就叫 pc.ram */
     object_property_add_child(object_get_objects_root(), mc->default_ram_id,
                               obj);
     /* Ensure backend's memory region name is equal to mc->default_ram_id */
@@ -3937,6 +3938,7 @@ void qemu_init(int argc, char **argv, char **envp)
                       cleanup_add_fd, NULL, &error_fatal);
 #endif
 
+	/* 创建一个机器，所有变量都没有设置 */
     current_machine = MACHINE(object_new_with_class(OBJECT_CLASS(machine_class)));
     if (machine_help_func(qemu_get_machine_opts(), current_machine)) {
         exit(0);
@@ -4188,6 +4190,7 @@ void qemu_init(int argc, char **argv, char **envp)
     configure_blockdev(&bdo_queue, machine_class, snapshot);
     audio_init_audiodevs();
 
+	/* 根据命令行参数来初始化机器 */
     machine_opts = qemu_get_machine_opts();
     qemu_opt_foreach(machine_opts, machine_set_property, current_machine,
                      &error_fatal);
