@@ -1124,6 +1124,7 @@ set_tctl(E1000State *s, int index, uint32_t val)
 {
     s->mac_reg[index] = val;
     s->mac_reg[TDT] &= 0xffff;
+	/* 数据发送 */
     start_xmit(s);
 }
 
@@ -1149,6 +1150,7 @@ set_ims(E1000State *s, int index, uint32_t val)
 }
 
 #define getreg(x)    [x] = mac_readreg
+/* 针对于各个读reg的处理 */
 typedef uint32_t (*readops)(E1000State *, int);
 static const readops macreg_readops[] = {
     getreg(PBA),      getreg(RCTL),     getreg(TDH),      getreg(TXDCTL),
@@ -1205,6 +1207,7 @@ static const readops macreg_readops[] = {
 enum { NREADOPS = ARRAY_SIZE(macreg_readops) };
 
 #define putreg(x)    [x] = mac_writereg
+/* 针对于各个写reg的处理 */
 typedef void (*writeops)(E1000State *, int, uint32_t);
 static const writeops macreg_writeops[] = {
     putreg(PBA),      putreg(EERD),     putreg(SWSM),     putreg(WUFC),
@@ -1215,6 +1218,7 @@ static const writeops macreg_writeops[] = {
     putreg(RDFTS),    putreg(RDFPC),    putreg(IPAV),     putreg(WUC),
     putreg(WUS),      putreg(AIT),
 
+	/* 												  发送函数 set_tctl	*/
     [TDLEN]  = set_dlen,   [RDLEN]  = set_dlen,       [TCTL] = set_tctl,
     [TDT]    = set_tctl,   [MDIC]   = set_mdic,       [ICS]  = set_ics,
     [TDH]    = set_16bit,  [RDH]    = set_16bit,      [RDT]  = set_rdt,
@@ -1288,6 +1292,7 @@ static const uint8_t mac_reg_access[0x8000] = {
     [PBM]   = markflag(MAC) | MAC_ACCESS_PARTIAL,
 };
 
+/* 这个主是调用 macreg_writeops  */
 static void
 e1000_mmio_write(void *opaque, hwaddr addr, uint64_t val,
                  unsigned size)
@@ -1302,6 +1307,7 @@ e1000_mmio_write(void *opaque, hwaddr addr, uint64_t val,
                 DBGOUT(GENERAL, "Writing to register at offset: 0x%08x. "
                        "It is not fully implemented.\n", index<<2);
             }
+			/* 关键调用点 */
             macreg_writeops[index](s, index, val);
         } else {    /* "flag needed" bit is set, but the flag is not active */
             DBGOUT(MMIO, "MMIO write attempt to disabled reg. addr=0x%08x\n",
@@ -1316,6 +1322,7 @@ e1000_mmio_write(void *opaque, hwaddr addr, uint64_t val,
     }
 }
 
+/* 这个主是调用 macreg_readops */
 static uint64_t
 e1000_mmio_read(void *opaque, hwaddr addr, unsigned size)
 {
@@ -1329,6 +1336,7 @@ e1000_mmio_read(void *opaque, hwaddr addr, unsigned size)
                 DBGOUT(GENERAL, "Reading register at offset: 0x%08x. "
                        "It is not fully implemented.\n", index<<2);
             }
+			/* 关键调用点 */
             return macreg_readops[index](s, index);
         } else {    /* "flag needed" bit is set, but the flag is not active */
             DBGOUT(MMIO, "MMIO read attempt of disabled reg. addr=0x%08x\n",
@@ -1678,6 +1686,7 @@ static void e1000_write_config(PCIDevice *pci_dev, uint32_t address,
     }
 }
 
+/* 网卡实现 */
 static void pci_e1000_realize(PCIDevice *pci_dev, Error **errp)
 {
     DeviceState *dev = DEVICE(pci_dev);
@@ -1696,6 +1705,7 @@ static void pci_e1000_realize(PCIDevice *pci_dev, Error **errp)
 
     e1000_mmio_setup(d);
 
+	/* 注册bar */
     pci_register_bar(pci_dev, 0, PCI_BASE_ADDRESS_SPACE_MEMORY, &d->mmio);
 
     pci_register_bar(pci_dev, 1, PCI_BASE_ADDRESS_SPACE_IO, &d->io);
