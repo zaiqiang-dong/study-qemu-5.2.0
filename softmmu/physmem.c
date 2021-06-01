@@ -1066,6 +1066,7 @@ static int subpage_register(subpage_t *mmio, uint32_t start, uint32_t end,
                             uint16_t section);
 static subpage_t *subpage_init(FlatView *fv, hwaddr base);
 
+/* 注意这里是一个赋值语句 */
 static void *(*phys_mem_alloc)(size_t size, uint64_t *align, bool shared) =
                                qemu_anon_ram_alloc;
 
@@ -1880,6 +1881,7 @@ static void ram_block_add(RAMBlock *new_block, Error **errp, bool shared)
                 return;
             }
         } else {
+			/* 调用 qemu_anon_ram_alloc */
             new_block->host = phys_mem_alloc(new_block->max_length,
                                              &new_block->mr->align, shared);
             if (!new_block->host) {

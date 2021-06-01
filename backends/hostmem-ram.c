@@ -26,7 +26,6 @@ ram_backend_memory_alloc(HostMemoryBackend *backend, Error **errp)
         return;
     }
 
-	/* name = pc.ram */
     name = host_memory_backend_get_name(backend);
     memory_region_init_ram_shared_nomigrate(&backend->mr, OBJECT(backend), name,
                            backend->size, backend->share, errp);

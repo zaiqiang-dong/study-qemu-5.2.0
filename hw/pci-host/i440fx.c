@@ -281,6 +281,7 @@ PCIBus *i440fx_init(const char *host_type, const char *pci_type,
     *pi440fx_state = I440FX_PCI_DEVICE(d);
     f = *pi440fx_state;
     f->system_memory = address_space_mem;
+	/* pci_address_space 这里等于 pci_memory  */
     f->pci_address_space = pci_address_space;
     f->ram_memory = ram_memory;
 

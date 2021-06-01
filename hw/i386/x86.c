@@ -1065,6 +1065,7 @@ void x86_bios_rom_init(MemoryRegion *rom_memory, bool isapc_ram_fw)
     if (bios_name == NULL) {
         bios_name = BIOS_FILENAME;
     }
+	/* bois_size 在这里是等于 256k */
     filename = qemu_find_file(QEMU_FILE_TYPE_BIOS, bios_name);
     if (filename) {
         bios_size = get_image_size(filename);
