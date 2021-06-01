@@ -452,6 +452,7 @@ host_memory_backend_class_init(ObjectClass *oc, void *data)
 {
     UserCreatableClass *ucc = USER_CREATABLE_CLASS(oc);
 
+	/* 关键调用点 */
     ucc->complete = host_memory_backend_memory_complete;
     ucc->can_be_deleted = host_memory_backend_can_be_deleted;
 

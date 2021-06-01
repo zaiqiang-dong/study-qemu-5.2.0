@@ -724,6 +724,7 @@ static Object *object_new_with_type(Type type)
     void (*obj_free)(void *);
 
     g_assert(type != NULL);
+	/* 类开初始化 class_init */
     type_initialize(type);
 
     size = type->instance_size;
@@ -741,6 +742,7 @@ static Object *object_new_with_type(Type type)
         obj_free = qemu_vfree;
     }
 
+	/* 关键调用点 */
     object_initialize_with_type(obj, size, type);
     obj->free = obj_free;
 

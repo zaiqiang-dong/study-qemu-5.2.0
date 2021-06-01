@@ -20,6 +20,7 @@ bool user_creatable_complete(UserCreatable *uc, Error **errp)
     Error *err = NULL;
 
     if (ucc->complete) {
+		// 调用host_memory_backend_memory_complete
         ucc->complete(uc, &err);
         error_propagate(errp, err);
     }

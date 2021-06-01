@@ -3049,7 +3049,9 @@ void cpu_exec_init_all(void)
      * up front what their requirements are.
      */
     finalize_target_page_bits();
+	/* 关键调用点 */
     io_mem_init();
+	/* 关键调用点 */
     memory_map_init();
     qemu_mutex_init(&map_client_list_lock);
 }
