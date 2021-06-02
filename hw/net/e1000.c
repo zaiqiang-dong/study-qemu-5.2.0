@@ -1703,6 +1703,7 @@ static void pci_e1000_realize(PCIDevice *pci_dev, Error **errp)
 
     pci_conf[PCI_INTERRUPT_PIN] = 1; /* interrupt pin A */
 
+	/* init mmio 和 io */
     e1000_mmio_setup(d);
 
 	/* 注册bar */

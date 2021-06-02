@@ -2816,6 +2816,7 @@ void address_space_init(AddressSpace *as, MemoryRegion *root, const char *name)
     as->ioeventfd_nb = 0;
     as->ioeventfds = NULL;
     QTAILQ_INIT(&as->listeners);
+	/* address_spaces 定义在当前文件 49行*/
     QTAILQ_INSERT_TAIL(&address_spaces, as, address_spaces_link);
     as->name = g_strdup(name ? name : "anonymous");
     address_space_update_topology(as);
