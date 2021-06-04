@@ -574,6 +574,16 @@ static AddressSpace *memory_region_to_address_space(MemoryRegion *mr)
 /* Render a memory region into the global view.  Ranges in @view obscure
  * ranges in @mr.
  */
+
+/*
+ * 作用：将 MemoryRegion 转化为 FlatRange 插入到 FlatView 中
+ * @view 	表示全局的 FlatView
+ * @mr 		表示需要转化的 MemoryRegion
+ * @base    表示mr的起始位置
+ * @chip 	表示表示一段虚拟机物理地址 由start和size构成刚开始为(0,UINT64_MAX）
+ * @readonly表示mr是否可读取
+ *
+ */
 static void render_memory_region(FlatView *view,
                                  MemoryRegion *mr,
                                  Int128 base,
@@ -615,6 +625,7 @@ static void render_memory_region(FlatView *view,
 
     /* Render subregions in priority order. */
     QTAILQ_FOREACH(subregion, &mr->subregions, subregions_link) {
+		/* 递归调用自己 */
         render_memory_region(view, subregion, base, clip,
                              readonly, nonvolatile);
     }
