@@ -618,6 +618,7 @@ static void render_memory_region(FlatView *view,
     if (mr->alias) {
         int128_subfrom(&base, int128_make64(mr->alias->addr));
         int128_subfrom(&base, int128_make64(mr->alias_offset));
+		/* 递归调用自己 */
         render_memory_region(view, mr->alias, base, clip,
                              readonly, nonvolatile);
         return;
@@ -1077,12 +1078,14 @@ static void address_space_set_flatview(AddressSpace *as)
     }
 }
 
+/* 只在 address_space_init 中调用 */
 static void address_space_update_topology(AddressSpace *as)
 {
     MemoryRegion *physmr = memory_region_get_flatview_root(as->root);
 
     flatviews_init();
     if (!g_hash_table_lookup(flat_views, physmr)) {
+		/* 关键调用点 */
         generate_memory_topology(physmr);
     }
     address_space_set_flatview(as);
@@ -2774,6 +2777,7 @@ void memory_listener_register(MemoryListener *listener, AddressSpace *as)
 {
     MemoryListener *other = NULL;
 
+	/* 加入全局 memory_listeners */
     listener->address_space = as;
     if (QTAILQ_EMPTY(&memory_listeners)
         || listener->priority >= QTAILQ_LAST(&memory_listeners)->priority) {
@@ -2787,6 +2791,7 @@ void memory_listener_register(MemoryListener *listener, AddressSpace *as)
         QTAILQ_INSERT_BEFORE(other, listener, link);
     }
 
+	/* 加入地址空间的 listeners */
     if (QTAILQ_EMPTY(&as->listeners)
         || listener->priority >= QTAILQ_LAST(&as->listeners)->priority) {
         QTAILQ_INSERT_TAIL(&as->listeners, listener, link_as);

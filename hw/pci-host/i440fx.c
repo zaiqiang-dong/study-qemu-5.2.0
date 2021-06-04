@@ -325,6 +325,7 @@ PCIBus *i440fx_init(const char *host_type, const char *pci_type,
     }
     d->config[I440FX_COREBOOT_RAM_SIZE] = ram_size;
 
+	/* 提交内存映射 */
     i440fx_update_memory_mappings(f);
 
     return b;

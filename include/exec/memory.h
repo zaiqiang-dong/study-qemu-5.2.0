@@ -744,7 +744,9 @@ struct AddressSpace {
 
     int ioeventfd_nb;
     struct MemoryRegionIoeventfd *ioeventfds;
+    /* 用于连接当地址空间上的 listener */
     QTAILQ_HEAD(, MemoryListener) listeners;
+    /* 用于放入全局的链表中 */
     QTAILQ_ENTRY(AddressSpace) address_spaces_link;
 };
 
