@@ -721,6 +721,7 @@ static MemoryRegion *memory_region_get_flatview_root(MemoryRegion *mr)
 }
 
 /* Render a memory topology into a list of disjoint absolute ranges. */
+/* 用于生成 flatview 平坦视图 */
 static FlatView *generate_memory_topology(MemoryRegion *mr)
 {
     int i;
@@ -729,6 +730,7 @@ static FlatView *generate_memory_topology(MemoryRegion *mr)
     view = flatview_new(mr);
 
     if (mr) {
+		/* 关键调用点 */
         render_memory_region(view, mr, int128_zero(),
                              addrrange_make(int128_zero(), int128_2_64()),
                              false, false);
