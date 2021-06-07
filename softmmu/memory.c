@@ -952,6 +952,7 @@ static void address_space_update_topology_pass(AddressSpace *as,
                 || (int128_eq(frold->addr.start, frnew->addr.start)
                     && !flatrange_equal(frold, frnew)))) {
             /* In old but not in new, or in both but attributes changed. */
+			/* 情况1：FlatRange 在老的 FlatView ,而不新的，或者是新的但其属性发生变化 */
 
             if (!adding) {
                 flat_range_coalesced_io_del(frold, as);
@@ -961,6 +962,9 @@ static void address_space_update_topology_pass(AddressSpace *as,
             ++iold;
         } else if (frold && frnew && flatrange_equal(frold, frnew)) {
             /* In both and unchanged (except logging may have changed) */
+			/* 情况2：如果同时存在且 adding 为true 同时只是 dirty_log_mask
+			 * 则相应的取消和开始log,这个log是记录内存访问情况
+			 * */
 
             if (adding) {
                 MEMORY_LISTENER_UPDATE_REGION(frnew, as, Forward, region_nop);
@@ -980,7 +984,7 @@ static void address_space_update_topology_pass(AddressSpace *as,
             ++inew;
         } else {
             /* In new */
-
+			/* 情况3：只在 new_view 中存在，则仅仅做添加 */
             if (adding) {
                 MEMORY_LISTENER_UPDATE_REGION(frnew, as, Forward, region_add);
                 flat_range_coalesced_io_add(frnew, as);
@@ -1097,6 +1101,7 @@ void memory_region_transaction_begin(void)
     ++memory_region_transaction_depth;
 }
 
+/* 提交内存修改 */
 void memory_region_transaction_commit(void)
 {
     AddressSpace *as;
@@ -1107,11 +1112,13 @@ void memory_region_transaction_commit(void)
     --memory_region_transaction_depth;
     if (!memory_region_transaction_depth) {
         if (memory_region_update_pending) {
+			/* 生成平坦型内存布局 */
             flatviews_reset();
 
             MEMORY_LISTENER_CALL_GLOBAL(begin, Forward);
 
             QTAILQ_FOREACH(as, &address_spaces, address_spaces_link) {
+				/* 关键调用点 */
                 address_space_set_flatview(as);
                 address_space_update_ioeventfds(as);
             }
