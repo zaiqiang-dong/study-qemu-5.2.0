@@ -198,6 +198,9 @@ static void pc_init1(MachineState *machine,
         }
     }
 
+	/* 这里其实初始化的是 x86ms->gsi gsi_state 的初始化在下面
+	 * pc_i8259_create 以及 ioapic_init_gsi
+	 * */
     gsi_state = pc_gsi_create(&x86ms->gsi, pcmc->pci_enabled);
 
 	//PCI总线
@@ -251,10 +254,11 @@ static void pc_init1(MachineState *machine,
 	/* 将irq 赋值给isa_bus->pci */
     isa_bus_irqs(isa_bus, x86ms->gsi);
 
-	//中断控制器
+	//中断i8259初始化
     pc_i8259_create(isa_bus, gsi_state->i8259_irq);
 
     if (pcmc->pci_enabled) {
+		/* IO APIC 创建 */
         ioapic_init_gsi(gsi_state, "i440fx");
     }
 

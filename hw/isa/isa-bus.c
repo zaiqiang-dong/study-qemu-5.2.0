@@ -70,6 +70,7 @@ ISABus *isa_bus_new(DeviceState *dev, MemoryRegion* address_space,
     return isabus;
 }
 
+/* 这里bus 就是isabus */
 void isa_bus_irqs(ISABus *bus, qemu_irq *irqs)
 {
     bus->irqs = irqs;
@@ -85,6 +86,7 @@ qemu_irq isa_get_irq(ISADevice *dev, unsigned isairq)
 {
     assert(!dev || ISA_BUS(qdev_get_parent_bus(DEVICE(dev))) == isabus);
     assert(isairq < ISA_NUM_IRQS);
+	/* 这里的irqs[] 就是 x86ms->gsi */
     return isabus->irqs[isairq];
 }
 

@@ -605,8 +605,10 @@ void ioapic_init_gsi(GSIState *gsi_state, const char *parent_name)
 
     assert(parent_name);
     if (kvm_ioapic_in_kernel()) {
+		/* 如果在kernel中模拟则创建 TYPE_KVM_IOAPIC */
         dev = qdev_new(TYPE_KVM_IOAPIC);
     } else {
+		/* 如果不在kernel中模拟则创建 TYPE_IOAPIC */
         dev = qdev_new(TYPE_IOAPIC);
     }
     object_property_add_child(object_resolve_path(parent_name, NULL),

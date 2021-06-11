@@ -1226,6 +1226,7 @@ void pc_i8259_create(ISABus *isa_bus, qemu_irq *i8259_irqs)
     } else if (xen_enabled()) {
         i8259 = xen_interrupt_controller_init();
     } else {
+		/* pic在Qemu中模拟 */
         i8259 = i8259_init(isa_bus, x86_allocate_cpu_irq());
     }
 
