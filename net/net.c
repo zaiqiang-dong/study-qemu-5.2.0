@@ -1506,6 +1506,7 @@ out:
     return ret;
 }
 
+/* 在vl.c中调用 */
 int net_init_clients(Error **errp)
 {
     net_change_state_entry =
@@ -1513,7 +1514,7 @@ int net_init_clients(Error **errp)
 
     QTAILQ_INIT(&net_clients);
 
-	/* net_init_netdev 与 net_init_nic 均会调用 net_client_init */
+	/* 下面的分支 均会调用 net_client_init */
     if (qemu_opts_foreach(qemu_find_opts("netdev"),
                           net_init_netdev, NULL, errp)) {
         return -1;
