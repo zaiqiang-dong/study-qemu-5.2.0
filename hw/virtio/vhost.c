@@ -1288,6 +1288,7 @@ int vhost_dev_init(struct vhost_dev *hdev, void *opaque,
     hdev->vdev = NULL;
     hdev->migration_blocker = NULL;
 
+	/* 通过 backend_type 来设置vhost->vhost_ops */
     r = vhost_set_backend_type(hdev, backend_type);
     assert(r >= 0);
 
@@ -1296,6 +1297,7 @@ int vhost_dev_init(struct vhost_dev *hdev, void *opaque,
         goto fail;
     }
 
+	/* 创建一个内核线程 */
     r = hdev->vhost_ops->vhost_set_owner(hdev);
     if (r < 0) {
         VHOST_OPS_DEBUG("vhost_set_owner failed");
@@ -1308,7 +1310,10 @@ int vhost_dev_init(struct vhost_dev *hdev, void *opaque,
         goto fail;
     }
 
-	/* 初始化 vhost virtqueue */
+	/*
+	 * 初始化 vhost virtqueue 这里virtqueue主要用于控制，真正与虚拟机前端网卡
+	 * 交互的是host中的vhost-net模块
+	 */
     for (i = 0; i < hdev->nvqs; ++i, ++n_initialized_vqs) {
         r = vhost_virtqueue_init(hdev, hdev->vqs + i, hdev->vq_index + i);
         if (r < 0) {
@@ -1325,7 +1330,6 @@ int vhost_dev_init(struct vhost_dev *hdev, void *opaque,
             }
         }
     }
-
     hdev->features = features;
 
     hdev->memory_listener = (MemoryListener) {
