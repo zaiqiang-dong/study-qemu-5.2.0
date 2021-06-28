@@ -389,6 +389,7 @@ bool qdev_realize(DeviceState *dev, BusState *bus, Error **errp)
     assert(!dev->realized && !dev->parent_bus);
 
     if (bus) {
+		/* 这里会将设备加入到bus下 */
         if (!qdev_set_parent_bus(dev, bus, errp)) {
             return false;
         }
