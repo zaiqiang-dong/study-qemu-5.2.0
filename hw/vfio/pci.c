@@ -2859,6 +2859,7 @@ static void vfio_realize(PCIDevice *pdev, Error **errp)
         goto error;
     }
 
+	/* 关键调用点 */
     vfio_populate_device(vdev, &err);
     if (err) {
         error_propagate(errp, err);
