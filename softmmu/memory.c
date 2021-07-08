@@ -626,7 +626,7 @@ static void render_memory_region(FlatView *view,
 
     /* Render subregions in priority order. */
     QTAILQ_FOREACH(subregion, &mr->subregions, subregions_link) {
-		/* 递归调用自己 */
+		/* 对每个子subregion 递归调用自己 */
         render_memory_region(view, subregion, base, clip,
                              readonly, nonvolatile);
     }
@@ -747,6 +747,7 @@ static FlatView *generate_memory_topology(MemoryRegion *mr)
                              addrrange_make(int128_zero(), int128_2_64()),
                              false, false);
     }
+	/* 将可以合并的FlatRanger进行合并 */
     flatview_simplify(view);
 
     view->dispatch = address_space_dispatch_new(view);
