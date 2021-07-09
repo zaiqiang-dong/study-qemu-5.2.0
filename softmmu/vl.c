@@ -2771,9 +2771,11 @@ static void configure_accelerators(const char *progname)
 	// 这里获取加速器的类型,我们使用了 --enable-kvm,所以这里是kvm
 	// 默认是TCG
     accel = qemu_opt_get(qemu_get_machine_opts(), "accel");
+	/* 设置 accel = kvm ,如果在命令行中加入 --enable-kvm */
     if (QTAILQ_EMPTY(&qemu_accel_opts.head)) {
         char **accel_list, **tmp;
 
+		/* 这里 accel == kvm 不为NULL */
         if (accel == NULL) {
             /* Select the default accelerator */
             bool have_tcg = accel_find("tcg");
@@ -2818,7 +2820,7 @@ static void configure_accelerators(const char *progname)
         }
     }
 
-	//调用 accelerator 的配置
+	//调用 accelerator 的配置 调用 do_configure_accelerator
     if (!qemu_opts_foreach(qemu_find_opts("accel"),
                            do_configure_accelerator, &init_failed, &error_fatal)) {
         if (!init_failed) {
@@ -3520,6 +3522,7 @@ void qemu_init(int argc, char **argv, char **envp)
             case QEMU_OPTION_preconfig:
                 preconfig_exit_requested = false;
                 break;
+				/* 使能kvm */
             case QEMU_OPTION_enable_kvm:
                 olist = qemu_find_opts("machine");
                 qemu_opts_parse_noisily(olist, "accel=kvm", false);
