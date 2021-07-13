@@ -2260,6 +2260,7 @@ static int kvm_init(MachineState *ms)
         assert(!ret);
     }
 
+	/*设置cpu加速器*/
     cpus_register_accel(&kvm_cpus);
     return 0;
 

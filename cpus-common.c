@@ -83,6 +83,7 @@ void cpu_list_add(CPUState *cpu)
     } else {
         assert(!cpu_index_auto_assigned);
     }
+	/*cpus 定义在本函数上面 */
     QTAILQ_INSERT_TAIL_RCU(&cpus, cpu, node);
 }
 

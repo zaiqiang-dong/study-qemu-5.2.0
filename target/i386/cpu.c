@@ -6682,6 +6682,7 @@ static void x86_cpu_realizefn(DeviceState *dev, Error **errp)
     }
 
 
+	/*加入到cpus list上*/
     cpu_exec_realizefn(cs, &local_err);
     if (local_err != NULL) {
         error_propagate(errp, local_err);
@@ -6931,6 +6932,7 @@ static void x86_cpu_get_crash_info_qom(Object *obj, Visitor *v,
 }
 #endif /* !CONFIG_USER_ONLY */
 
+/*初始化函数*/
 static void x86_cpu_initfn(Object *obj)
 {
     X86CPU *cpu = X86_CPU(obj);

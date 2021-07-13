@@ -620,6 +620,7 @@ void qemu_init_vcpu(CPUState *cpu)
 
     /* accelerators all implement the CpusAccel interface */
     g_assert(cpus_accel != NULL && cpus_accel->create_vcpu_thread != NULL);
+	/*创建vcpu线程*/
     cpus_accel->create_vcpu_thread(cpu);
 
     while (!cpu->created) {
