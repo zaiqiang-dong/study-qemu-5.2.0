@@ -428,7 +428,9 @@ struct CPUState {
      */
     uintptr_t mem_io_pc;
 
+    /*内核VCPU句柄*/
     int kvm_fd;
+    /*内核虚拟机句柄*/
     struct KVMState *kvm_state;
     struct kvm_run *kvm_run;
 

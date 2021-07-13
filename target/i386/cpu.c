@@ -6730,7 +6730,7 @@ static void x86_cpu_realizefn(DeviceState *dev, Error **errp)
     }
 #endif
 
-	//关键流程
+	//关键流程,创建vcpu线程
     qemu_init_vcpu(cs);
 
     /*

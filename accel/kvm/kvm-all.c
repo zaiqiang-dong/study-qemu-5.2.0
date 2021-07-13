@@ -84,6 +84,7 @@ struct KVMState
 
     int nr_slots;
     int fd;
+	/*来自内核虚拟机句柄，可做ioctl*/
     int vmfd;
     int coalesced_mmio;
     int coalesced_pio;
@@ -450,6 +451,7 @@ int kvm_init_vcpu(CPUState *cpu, Error **errp)
 
     trace_kvm_init_vcpu(cpu->cpu_index, kvm_arch_vcpu_id(cpu));
 
+	/*关键调用点*/
     ret = kvm_get_vcpu(s, kvm_arch_vcpu_id(cpu));
     if (ret < 0) {
         error_setg_errno(errp, -ret, "kvm_init_vcpu: kvm_get_vcpu failed (%lu)",
@@ -457,6 +459,7 @@ int kvm_init_vcpu(CPUState *cpu, Error **errp)
         goto err;
     }
 
+	/*获取VCPU句柄*/
     cpu->kvm_fd = ret;
     cpu->kvm_state = s;
     cpu->vcpu_dirty = true;
@@ -2104,6 +2107,7 @@ static int kvm_init(MachineState *ms)
         goto err;
     }
 
+	/* 将虚拟机句柄赋值给s */
     s->vmfd = ret;
 
     /* check the vcpu limits */
@@ -2201,6 +2205,7 @@ static int kvm_init(MachineState *ms)
     kvm_ioeventfd_any_length_allowed =
         (kvm_check_extension(s, KVM_CAP_IOEVENTFD_ANY_LENGTH) > 0);
 
+	/*将s赋值给全局变量kvm_state*/
     kvm_state = s;
 
     /*

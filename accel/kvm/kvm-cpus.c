@@ -41,6 +41,7 @@ static void *kvm_vcpu_thread_fn(void *arg)
     cpu->can_do_io = 1;
     current_cpu = cpu;
 
+	/*在内核中创建VCPU*/
     r = kvm_init_vcpu(cpu, &error_fatal);
     kvm_init_cpu_signals(cpu);
 
