@@ -757,6 +757,7 @@ static FlatView *generate_memory_topology(MemoryRegion *mr)
         flatview_add_to_dispatch(view, &mrs);
     }
     address_space_dispatch_compact(view->dispatch);
+	/* 加入静态全局变量中 */
     g_hash_table_replace(flat_views, mr, view);
 
     return view;
@@ -1067,6 +1068,7 @@ static void address_space_set_flatview(AddressSpace *as)
     }
 
     /* Writes are protected by the BQL.  */
+	/* 设置Flatview */
     qatomic_rcu_set(&as->current_map, new_view);
     if (old_view) {
         flatview_unref(old_view);
@@ -1093,6 +1095,7 @@ static void address_space_update_topology(AddressSpace *as)
 		/* 关键调用点 */
         generate_memory_topology(physmr);
     }
+	/* 关键调用点 */
     address_space_set_flatview(as);
 }
 
@@ -1125,6 +1128,7 @@ void memory_region_transaction_commit(void)
             }
             memory_region_update_pending = false;
             ioeventfd_update_pending = false;
+			/* 调用memory listeners commit函数 */
             MEMORY_LISTENER_CALL_GLOBAL(commit, Forward);
         } else if (ioeventfd_update_pending) {
             QTAILQ_FOREACH(as, &address_spaces, address_spaces_link) {
@@ -2845,6 +2849,7 @@ void address_space_init(AddressSpace *as, MemoryRegion *root, const char *name)
 	/* address_spaces 定义在当前文件 49行*/
     QTAILQ_INSERT_TAIL(&address_spaces, as, address_spaces_link);
     as->name = g_strdup(name ? name : "anonymous");
+	/* 关键调用点 */
     address_space_update_topology(as);
     address_space_update_ioeventfds(as);
 }
