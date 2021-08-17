@@ -1736,6 +1736,7 @@ static void virtio_pci_device_unplugged(DeviceState *d)
     }
 }
 
+/* 关键函数 */
 static void virtio_pci_realize(PCIDevice *pci_dev, Error **errp)
 {
     VirtIOPCIProxy *proxy = VIRTIO_PCI(pci_dev);
@@ -1757,11 +1758,14 @@ static void virtio_pci_realize(PCIDevice *pci_dev, Error **errp)
      *   region 4+5 --  virtio modern memory (64bit) bar
      *
      */
+
+	/* 分配功能对应的 id */
     proxy->legacy_io_bar_idx  = 0;
     proxy->msix_bar_idx       = 1;
     proxy->modern_io_bar_idx  = 2;
     proxy->modern_mem_bar_idx = 4;
 
+	/* 指定各个能力配置区在偏移和大小 */
     proxy->common.offset = 0x0;
     proxy->common.size = 0x1000;
     proxy->common.type = VIRTIO_PCI_CAP_COMMON_CFG;
@@ -1781,6 +1785,12 @@ static void virtio_pci_realize(PCIDevice *pci_dev, Error **errp)
     proxy->notify_pio.offset = 0x0;
     proxy->notify_pio.size = 0x4;
     proxy->notify_pio.type = VIRTIO_PCI_CAP_NOTIFY_CFG;
+
+	/*
+	 * 初始化modern bar的区域，
+	 * 这块主要用于能力指针指向的区域
+	 * 从大小就可以可看出
+	 */
 
     /* subclasses can enforce modern, so do this unconditionally */
     memory_region_init(&proxy->modern_bar, OBJECT(proxy), "virtio-pci",
@@ -1853,6 +1863,7 @@ static void virtio_pci_realize(PCIDevice *pci_dev, Error **errp)
 
     virtio_pci_bus_new(&proxy->bus, sizeof(proxy->bus), proxy);
     if (k->realize) {
+		/* 这个是具体设备realize */
         k->realize(proxy, errp);
     }
 }
